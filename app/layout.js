@@ -1,11 +1,9 @@
-import Logo from '@/app/_components/Logo';
-import Navigation from '@/app/_components/Navigation';
-
 import '@/app/_styles/globals.css';
 
 //Usage of google fonts
 //https://www.udemy.com/course/the-ultimate-react-course/learn/lecture/43783724#questions/21898766
 import { Josefin_Sans } from 'next/font/google';
+import Header from './_components/Header';
 const josefin = Josefin_Sans({
   subsets: ['latin'],
   display: 'swap',
@@ -25,13 +23,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={` ${josefin.className} bg-primary-950 text-primary-100 min-h-screen`}
+        className={` ${josefin.className} antialiased  bg-primary-950 text-primary-100 min-h-screen flex flex-col  relative`}
       >
-        <header>
-          <Logo />
-          <Navigation />
-        </header>
-        <main>{children}</main>
+        <Header />
+
+        <div className="flex-1 px-8 py-12 grid">
+          <main className="max-w-7xl mx-auto w-full ">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
