@@ -4,6 +4,7 @@ import '@/app/_styles/globals.css';
 //https://www.udemy.com/course/the-ultimate-react-course/learn/lecture/43783724#questions/21898766
 import { Josefin_Sans } from 'next/font/google';
 import Header from './_components/Header';
+import { ReservationProvider } from './_contexts/ReservationContext';
 const josefin = Josefin_Sans({
   subsets: ['latin'],
   display: 'swap',
@@ -29,7 +30,9 @@ export default function RootLayout({ children }) {
 
         <div className="flex-1 px-8 py-12 grid">
           <main className="max-w-7xl mx-auto w-full ">
-            {children}
+            <ReservationProvider>
+              {children}
+            </ReservationProvider>
           </main>
         </div>
       </body>
