@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import CabinList from '../_components/CabinList';
 import Spinner from '../_components/Spinner';
+import Filter from '../_components/Filter';
+import ReservationReminder from '../_components/ReservationReminder';
 
 export const metadata = {
   title: 'Cabins',
@@ -10,7 +12,12 @@ export const metadata = {
 // export const revalidate = 0;
 export const revalidate = 3600; //1h
 
-function Page() {
+//Server has searchParams property
+async function Page({ searchParams }) {
+  const filter = (await searchParams)?.capacity ?? 'all';
+
+  // const filter = params?.capacity ?? 'all';
+
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -27,8 +34,14 @@ function Page() {
         vacation. Welcome to paradise.
       </p>
 
-      <Suspense fallback={<Spinner />}>
-        <CabinList />
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+
+      {/* allow suspense to differentiate by key prop */}
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );

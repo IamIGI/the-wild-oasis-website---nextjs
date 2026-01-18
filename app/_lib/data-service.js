@@ -134,6 +134,8 @@ export async function getSettings() {
     .select('*')
     .single();
 
+  // await new Promise((res) => setTimeout(res, 2000));
+
   if (error) {
     console.error(error);
     throw new Error('Settings could not be loaded');
