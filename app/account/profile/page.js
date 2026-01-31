@@ -1,13 +1,15 @@
 import SelectCountry from '@/app/_components/SelectCountry';
 import UpdateProfileForm from '@/app/_components/UpdateProfileForm';
+import { auth } from '@/app/_lib/auth';
+import { getGuest } from '@/app/_lib/data-service';
 
 export const metadata = {
   title: 'Profile',
 };
 
-function Page() {
-  const countryFlag = 'pt.jpg';
-  const nationality = 'portugal';
+async function Page() {
+  const session = await auth();
+  const guest = await getGuest(session.user.email);
 
   return (
     <div>
@@ -22,12 +24,12 @@ function Page() {
       {/* SelectCountry is server component, therefor it cannot be mount in UpdateProfileForm cuz is is a client component
       So we are making a trick by mounting SelectCountry in server page as a children for client component, thanks to that
       SelectCountry is rendered in server side, but can be used by client component */}
-      <UpdateProfileForm>
+      <UpdateProfileForm guest={guest}>
         <SelectCountry
           name="nationality"
           id="nationality"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-          defaultCountry={nationality}
+          defaultCountry={guest.nationality}
         />
       </UpdateProfileForm>
     </div>
