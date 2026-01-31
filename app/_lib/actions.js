@@ -1,9 +1,10 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import { updateGuest } from './data-service';
 
-export async function updateProfile(formData) {
+export async function updateProfile(prevState, formData) {
   console.log('Server action: ', formData);
 
   const session = await auth();
@@ -14,6 +15,12 @@ export async function updateProfile(formData) {
     .get('nationality')
     .split('%');
 
+  if (
+    prevState.nationalID === nationalID &&
+    prevState.nationality === nationality
+  )
+    return prevState;
+
   if (!/^[a-zA-Z0-9]{6,12}$/.test(nationalID))
     throw new Error('Please provide a valid national ID');
 
@@ -23,7 +30,14 @@ export async function updateProfile(formData) {
     nationalID,
   };
 
-  await updateGuest(session.user.guestId, updateData);
+  const { data } = await updateGuest(
+    session.user.guestId,
+    updateData,
+  );
+
+  revalidatePath('/account/profile');
+
+  return data;
 }
 
 export async function singInAction() {
