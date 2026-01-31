@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import {
   updateGuest,
   updateProfile,
@@ -17,10 +17,23 @@ function UpdateProfileForm({ children, guest }) {
     countryFlag,
   } = guest;
 
+  //You can also use useFormStatus, for button loading indicator only:
+  // https://chatgpt.com/c/697e74a6-fb78-838e-9b2c-0fc2c5ab6870
+  // https://react.dev/reference/react-dom/hooks/useFormStatus
+  const [state, formAction, isPending] = useActionState(
+    updateProfile,
+    {
+      nationality,
+      nationalID,
+    },
+  );
+
+  useEffect(() => console.log(isPending), [isPending]);
+
   return (
     <form
       className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
-      action={updateProfile}
+      action={formAction}
     >
       <div className="space-y-2">
         <label>Full name</label>
@@ -68,8 +81,11 @@ function UpdateProfileForm({ children, guest }) {
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-          Update profile
+        <button
+          className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
+          disabled={isPending}
+        >
+          {isPending ? 'Updating...' : 'Update profile'}
         </button>
       </div>
     </form>
