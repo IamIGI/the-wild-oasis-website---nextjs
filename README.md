@@ -32,6 +32,16 @@ SUPABASE_KEY= #secret key https://supabase.com/dashboard/project/bxmaltcawkcfynt
 
 ##CLIENT ACCESS ALSO - NEXT*PUBLIC*<var_name>
 
+# AUTHENTICATION
+
+Docs: https://authjs.dev/getting-started/installation?framework=Next.js
+Google providors: https://www.udemy.com/course/the-ultimate-react-course/learn/lecture/43783846#questions/22528913
+
+NEXTAUTH_URL= http://localhost:3000
+NEXTAUTH_SECRET=generate key from https://secretkeygen.vercel.app/
+AUTH_GOOGLE_ID= https://console.cloud.google.com/auth/clients/
+AUTH_GOOGLE_SECRET= https://console.cloud.google.com/auth/clients/
+
 ## MetaData:
 
 // export const metadata = {
