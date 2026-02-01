@@ -3,12 +3,40 @@
 import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import {
-  deleteBooking,
+  deleteBooking as deleteBookingService,
   getBookings,
   updateGuest,
   updateBooking as updateBookingService,
+  createBooking as createBookingService,
 } from './data-service';
 import { redirect } from 'next/navigation';
+
+export async function createBooking(bookingData, formData) {
+  console.log('createBooking: ', formData);
+
+  const session = await auth();
+  if (!session) throw new Error('You must be logged in');
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get('numGuests')),
+    observations: formData
+      .get('observations')
+      .slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: 'unconfirmed',
+  };
+
+  console.log(newBooking);
+
+  createBookingService(newBooking);
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect('/cabins/thankyou');
+}
 
 export async function updateProfile(prevState, formData) {
   console.log('Server action: ', formData);
@@ -46,7 +74,7 @@ export async function updateProfile(prevState, formData) {
   return data;
 }
 
-export async function deleteReservation(bookingId) {
+export async function deleteBooking(bookingId) {
   const session = await auth();
   if (!session) throw new Error('You must be logged in');
 
@@ -59,7 +87,7 @@ export async function deleteReservation(bookingId) {
       'You are now allowed to delete this booking',
     );
 
-  const data = await deleteBooking(bookingId);
+  const data = await deleteBookingService(bookingId);
 
   revalidatePath('/account/reservations');
 }
