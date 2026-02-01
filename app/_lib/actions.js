@@ -6,7 +6,9 @@ import {
   deleteBooking,
   getBookings,
   updateGuest,
+  updateBooking as updateBookingService,
 } from './data-service';
+import { redirect } from 'next/navigation';
 
 export async function updateProfile(prevState, formData) {
   console.log('Server action: ', formData);
@@ -60,6 +62,32 @@ export async function deleteReservation(bookingId) {
   const data = await deleteBooking(bookingId);
 
   revalidatePath('/account/reservations');
+}
+
+export async function updateBooking(formData) {
+  console.log('updateBooking: ', formData);
+  const bookingId = Number(formData.get('bookingId'));
+  const updateData = {
+    numGuests: Number(formData.get('numGuests')),
+    observations: formData
+      .get('observations')
+      .slice(0, 1000),
+  };
+
+  const session = await auth();
+  if (!session) throw new Error('You must be logged in');
+
+  const guestBookings = await getBookings(
+    session.user.guestId,
+  );
+  const guestBookingIds = guestBookings.map((b) => b.id);
+  if (!guestBookingIds.includes(bookingId))
+    throw new Error(
+      'You are now allowed to delete this booking',
+    );
+
+  await updateBookingService(bookingId, updateData);
+  redirect('/account/reservations');
 }
 
 export async function singInAction() {
