@@ -6,7 +6,6 @@ import {
 } from '@/app/_lib/data-service';
 
 export default async function Page({ params }) {
-  // CHANGE
   const { bookingId } = await params;
   const { numGuests, observations, cabinId } =
     await getBooking(bookingId);
