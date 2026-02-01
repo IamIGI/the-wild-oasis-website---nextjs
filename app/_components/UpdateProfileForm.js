@@ -1,14 +1,9 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
-import {
-  updateGuest,
-  updateProfile,
-} from '../_lib/actions';
+import { useActionState, useEffect } from 'react';
+import { updateProfile } from '../_lib/actions';
 
 function UpdateProfileForm({ children, guest }) {
-  const [count, setCount] = useState();
-
   const {
     fullName,
     email,
